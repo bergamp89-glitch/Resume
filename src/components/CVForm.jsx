@@ -65,6 +65,38 @@ export default function CVForm({ cvData, updateCvData, addExperience, removeExpe
     onGenerate();
   };
 
+  const handlePhoneChange = (e) => {
+    let input = e.target.value;
+    let val = input.replace(/[^\d+]/g, '');
+    
+    if (val.length > 0 && !val.startsWith('+')) {
+      if (val.startsWith('998')) {
+        val = '+' + val;
+      } else {
+        val = '+998' + val;
+      }
+    }
+
+    let numbers = val.replace(/\D/g, '');
+    
+    if (numbers.length === 0) {
+      updateCvData('phoneNumber', '');
+      return;
+    }
+
+    if (numbers.startsWith('998')) {
+      numbers = numbers.substring(0, 12);
+      let formatted = '+998';
+      if (numbers.length > 3) formatted += ' ' + numbers.substring(3, 5);
+      if (numbers.length > 5) formatted += ' ' + numbers.substring(5, 8);
+      if (numbers.length > 8) formatted += ' ' + numbers.substring(8, 10);
+      if (numbers.length > 10) formatted += ' ' + numbers.substring(10, 12);
+      updateCvData('phoneNumber', formatted);
+    } else {
+      updateCvData('phoneNumber', '+' + numbers.substring(0, 12));
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 w-full">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Ma'lumotlarni kiritish</h2>
@@ -77,9 +109,9 @@ export default function CVForm({ cvData, updateCvData, addExperience, removeExpe
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-        <InputField label="Mutaxassisligi" value={cvData.specialty} onChange={e => updateCvData('specialty', e.target.value)} placeholder="Frontend Dasturchi" required={true} />
+        <InputField label="Mutaxassisligi" value={cvData.specialty} onChange={e => updateCvData('specialty', e.target.value)} placeholder="Baklavr yoki Magistratura kabi" required={true} />
         <InputField label="Yashash manzili" value={cvData.address} onChange={e => updateCvData('address', e.target.value)} placeholder="Toshkent sh., Chilonzor tumani" required={true} />
-        <InputField label="Telefon raqami" type="tel" value={cvData.phoneNumber} onChange={e => updateCvData('phoneNumber', e.target.value)} placeholder="+998 90 123 45 67" required={true} />
+        <InputField label="Telefon raqami" type="tel" value={cvData.phoneNumber} onChange={handlePhoneChange} placeholder="+998 90 123 45 67" required={true} />
         <InputField label="Qancha maosh hohlaysiz" value={cvData.desiredSalary} onChange={e => updateCvData('desiredSalary', e.target.value)} placeholder="Masalan: 5 000 000 so'm yoki $500" required={true} />
         <div className="md:col-span-2">
           <InputField label="Nechta til bilishi" value={cvData.languages} onChange={e => updateCvData('languages', e.target.value)} placeholder="O'zbek (Ona tili), Ingliz (B2), Rus (A2)" required={true} />
