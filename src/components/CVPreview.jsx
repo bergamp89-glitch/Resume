@@ -97,6 +97,8 @@ export default function CVPreview({ cvData, onBack }) {
     }
   }, []);
 
+  const numPages = (cvData.certificates && cvData.certificates.length > 0) ? 2 : 1;
+
   return (
     <div className="sticky top-4 sm:top-8 mx-auto w-full max-w-full">
       {/* Harakat tugmalari */}
@@ -136,17 +138,25 @@ export default function CVPreview({ cvData, onBack }) {
       </div>
 
       {/* CV Asosiy Qismi */}
-      <div className="w-full overflow-x-auto pb-8 flex justify-center">
-        <div 
-          ref={printRef}
-          className="flex flex-col"
-          style={{ 
-            transform: `scale(${scale})`, 
-            transformOrigin: 'top center',
-            marginBottom: scale < 1 ? `-${(297 * 2) * (1 - scale)}mm` : '0',
-            width: '210mm'
-          }} 
+      <div className="w-full pb-8 flex justify-center overflow-hidden">
+        <div style={{ 
+            width: scale < 1 ? `calc(210mm * ${scale})` : '210mm',
+            height: `calc(${297 * numPages}mm * ${scale})`,
+            position: 'relative'
+          }}
         >
+          <div 
+            ref={printRef}
+            className="flex flex-col"
+            style={{ 
+              transform: `scale(${scale})`, 
+              transformOrigin: 'top left',
+              width: '210mm',
+              position: 'absolute',
+              top: 0,
+              left: 0
+            }} 
+          >
           {/* PAGE 1 */}
           <div 
             className="bg-[#f8f9fa] shadow-2xl print:shadow-none font-sans overflow-hidden flex w-full relative"
@@ -177,7 +187,7 @@ export default function CVPreview({ cvData, onBack }) {
                       <div className="bg-[#b48c66] p-2.5 rounded-md shrink-0">
                         <Phone className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-[15px]">{cvData.phoneNumber}</span>
+                      <span className="text-[15px] break-words flex-1">{cvData.phoneNumber}</span>
                     </div>
                   )}
                   {cvData.address && (
@@ -185,7 +195,7 @@ export default function CVPreview({ cvData, onBack }) {
                       <div className="bg-[#b48c66] p-2.5 rounded-md shrink-0">
                         <MapPin className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-[15px]">{cvData.address}</span>
+                      <span className="text-[15px] break-words flex-1">{cvData.address}</span>
                     </div>
                   )}
                   {cvData.birthDate && (
@@ -193,7 +203,7 @@ export default function CVPreview({ cvData, onBack }) {
                       <div className="bg-[#b48c66] p-2.5 rounded-md shrink-0">
                         <Calendar className="w-5 h-5 text-white" />
                       </div>
-                      <div className="text-[15px] flex flex-col">
+                      <div className="text-[15px] flex flex-col flex-1 break-words">
                         <span className="text-gray-300 text-xs uppercase mb-0.5">Tug'ilgan sanasi:</span>
                         <span>{cvData.birthDate}</span>
                       </div>
@@ -204,7 +214,7 @@ export default function CVPreview({ cvData, onBack }) {
                       <div className="bg-[#b48c66] p-2.5 rounded-md shrink-0">
                         <DollarSign className="w-5 h-5 text-white" />
                       </div>
-                      <div className="text-[15px] flex flex-col">
+                      <div className="text-[15px] flex flex-col flex-1 break-words">
                         <span className="text-gray-300 text-xs uppercase mb-0.5">Istalgan maosh:</span>
                         <span>{cvData.desiredSalary}</span>
                       </div>
@@ -214,15 +224,18 @@ export default function CVPreview({ cvData, onBack }) {
               </div>
 
               {/* Languages */}
-              {cvData.languages && (
+              {cvData.languages && cvData.languages.length > 0 && (
                 <div className="px-8 pt-2 pb-8 flex-grow bg-[#5a6472]">
                   <h2 className="text-2xl font-bold tracking-wider mb-2 uppercase mt-6">Tillar</h2>
                   <div className="w-full h-[2px] bg-white/30 mb-8"></div>
                   <div className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                    {cvData.languages.split(',').map((lang, idx) => (
-                       <div key={idx} className="flex items-center gap-4 mb-4">
-                         <Globe className="w-6 h-6 text-white shrink-0" />
-                         <span>{lang.trim()}</span>
+                    {cvData.languages.map((lang, idx) => (
+                       <div key={idx} className="flex items-start gap-4 mb-5">
+                         <Globe className="w-6 h-6 text-white shrink-0 mt-0.5" />
+                         <div className="flex flex-col flex-1 break-words">
+                           <span className="font-bold text-white uppercase tracking-wide">{lang.name}</span>
+                           <span className="text-slate-300 text-sm font-medium mt-0.5">{lang.level}</span>
+                         </div>
                        </div>
                     ))}
                   </div>
@@ -232,11 +245,11 @@ export default function CVPreview({ cvData, onBack }) {
 
             {/* Main Content */}
             <div className="w-[62%] px-10 py-16 flex flex-col z-0 bg-[#f8f9fa]">
-              <h1 className="text-[3.5rem] font-extrabold text-[#0f2a4a] leading-[1.1] uppercase tracking-tight mb-2">
+              <h1 className="text-[2.8rem] font-extrabold text-[#0f2a4a] leading-[1.1] uppercase tracking-tight mb-2 break-words">
                 {cvData.firstName} <br /> {cvData.lastName}
               </h1>
-              {cvData.patronymic && <h2 className="text-2xl text-[#0f2a4a] font-semibold mb-2 uppercase">{cvData.patronymic}</h2>}
-              <p className="text-2xl text-slate-700 tracking-wide font-medium mb-16 uppercase">{cvData.specialty}</p>
+              {cvData.patronymic && <h2 className="text-2xl text-[#0f2a4a] font-semibold mb-2 uppercase break-words">{cvData.patronymic}</h2>}
+              <p className="text-2xl text-slate-700 tracking-wide font-medium mb-16 uppercase break-words">{cvData.specialty}</p>
 
               <div className="flex-grow">
                 <h3 className="text-2xl font-bold text-[#0f2a4a] uppercase tracking-wider mb-2">Ish Tajribasi</h3>
@@ -254,12 +267,12 @@ export default function CVPreview({ cvData, onBack }) {
                         </h4>
                         <p className="text-slate-500 text-sm mb-3 font-medium">{exp.period}</p>
                         
-                        <div className="text-slate-700 text-[15px] leading-relaxed whitespace-pre-wrap">
+                        <div className="text-slate-700 text-[15px] leading-relaxed whitespace-pre-wrap break-words">
                           {/* Rendering tasks with generic bullets if they are separated by newlines, otherwise just text */}
-                          {exp.tasks.split('\n').map((line, i) => (
-                            <div key={i} className="flex gap-2 mb-1">
-                              <span className="text-[#0f2a4a] font-bold">•</span>
-                              <span>{line}</span>
+                          {exp.tasks && exp.tasks.split('\n').map((line, i) => (
+                            <div key={i} className="flex items-start gap-2 mb-1">
+                              <span className="text-[#0f2a4a] font-bold mt-[2px]">•</span>
+                              <span className="flex-1 break-words">{line}</span>
                             </div>
                           ))}
                         </div>
@@ -274,14 +287,14 @@ export default function CVPreview({ cvData, onBack }) {
           </div>
 
           {/* PAGE 2 - Certificates */}
-          <div 
-            className="bg-white shadow-2xl print:shadow-none font-sans overflow-hidden flex flex-col w-full px-12 py-16"
-            style={{ minHeight: '297mm', pageBreakBefore: 'always', marginTop: scale < 1 ? '20px' : '0' }}
-          >
-            <h2 className="text-3xl font-extrabold text-[#0f2a4a] uppercase tracking-wider mb-4 text-center">Sertifikat va Diplomlar</h2>
-            <div className="w-32 h-1 bg-[#0f2a4a] mx-auto mb-16"></div>
-            
-            {cvData.certificates && cvData.certificates.length > 0 ? (
+          {cvData.certificates && cvData.certificates.length > 0 && (
+            <div 
+              className="bg-white shadow-2xl print:shadow-none font-sans overflow-hidden flex flex-col w-full px-12 py-16"
+              style={{ height: '297mm', minHeight: '297mm', pageBreakBefore: 'always' }}
+            >
+              <h2 className="text-3xl font-extrabold text-[#0f2a4a] uppercase tracking-wider mb-4 text-center">Sertifikat va Diplomlar</h2>
+              <div className="w-32 h-1 bg-[#0f2a4a] mx-auto mb-16"></div>
+              
               <div className={`grid gap-12 ${cvData.certificates.length > 1 ? 'grid-cols-2' : 'grid-cols-1 max-w-3xl mx-auto'}`}>
                 {cvData.certificates.map((cert, idx) => (
                   <div key={idx} className="flex flex-col items-center">
@@ -291,27 +304,22 @@ export default function CVPreview({ cvData, onBack }) {
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center flex-grow opacity-50 mb-32">
-                <div className="w-24 h-24 border-4 border-dashed border-slate-300 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-slate-300 text-4xl">!</span>
-                </div>
-                <p className="text-3xl text-slate-400 font-bold uppercase tracking-widest">Mavjud emas</p>
-              </div>
-            )}
-          </div>
-
+            </div>
+          )}
+        </div>
         </div>
       </div>
       
       {/* Print uchun CSS */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @media print {
-          body { background: white !important; }
-          #root { display: contents; }
-          .shadow-2xl { box-shadow: none !important; }
-        }
-      `}} />
+      <style>
+        {`
+          @media print {
+            body { background: white !important; }
+            #root { display: contents; }
+            .shadow-2xl { box-shadow: none !important; }
+          }
+        `}
+      </style>
     </div>
   );
 }

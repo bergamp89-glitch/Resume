@@ -12,7 +12,7 @@ function App() {
     phoneNumber: '',
     desiredSalary: '',
     birthDate: '',
-    languages: '',
+    languages: [],
     specialty: '',
     address: '',
     userImage: null,
@@ -57,6 +57,20 @@ function App() {
     }));
   };
 
+  const addLanguage = (newLang) => {
+    setCvData(prev => ({
+      ...prev,
+      languages: [...prev.languages, newLang]
+    }));
+  };
+
+  const removeLanguage = (index) => {
+    setCvData(prev => ({
+      ...prev,
+      languages: prev.languages.filter((_, i) => i !== index)
+    }));
+  };
+
   return (
     <>
       {!isStarted ? (
@@ -72,6 +86,8 @@ function App() {
                 removeExperience={removeExperience}
                 addCertificate={addCertificate}
                 removeCertificate={removeCertificate}
+                addLanguage={addLanguage}
+                removeLanguage={removeLanguage}
                 onGenerate={() => setShowPreview(true)}
               />
             </div>
