@@ -146,7 +146,6 @@ export default function CVPreview({ cvData, onBack }) {
           }}
         >
           <div 
-            ref={printRef}
             className="flex flex-col"
             style={{ 
               transform: `scale(${scale})`, 
@@ -157,6 +156,7 @@ export default function CVPreview({ cvData, onBack }) {
               left: 0
             }} 
           >
+            <div ref={printRef} className="w-full flex flex-col bg-white">
           {/* PAGE 1 */}
           <div 
             className="bg-[#f8f9fa] shadow-2xl print:shadow-none font-sans overflow-hidden flex w-full relative"
@@ -306,6 +306,7 @@ export default function CVPreview({ cvData, onBack }) {
               </div>
             </div>
           )}
+            </div>
         </div>
         </div>
       </div>
